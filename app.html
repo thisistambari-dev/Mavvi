@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mavvi — App (local preview)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: { mavvi: {50:'#faf5ff',100:'#f3e8ff',500:'#7c3aed',600:'#6d28d9',700:'#5b21b6'}, ink:{900:'#1e1b2e',600:'#4b4763',400:'#8b87a3'}, cream:'#fdfaf6' },
+    fontFamily: { display:['Fredoka','system-ui','sans-serif'], sans:['Nunito','system-ui','sans-serif'] }
+  } }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream text-ink-900 font-sans">
+<div class="max-w-5xl mx-auto p-6 space-y-6">
+
+  <header class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold font-display">Welcome back, Sarah</h1>
+      <p class="text-ink-600 text-sm">Your brand: <strong>Velour Confectioneries</strong> · Elegant, warm and playful</p>
+    </div>
+    <span class="text-xs bg-mavvi-100 text-mavvi-700 px-3 py-1 rounded-full font-bold">LOCAL PREVIEW · no sign-in / DB</span>
+  </header>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-white rounded-xl shadow p-4"><p class="text-xs text-ink-400 font-bold">GENERATED</p><p id="statGenerated" class="text-2xl font-bold font-display">0</p></div>
+    <div class="bg-white rounded-xl shadow p-4"><p class="text-xs text-ink-400 font-bold">SAVED</p><p id="statSaved" class="text-2xl font-bold font-display">0</p></div>
+    <div class="bg-white rounded-xl shadow p-4"><p class="text-xs text-ink-400 font-bold">UPCOMING</p><p class="text-2xl font-bold font-display">0</p></div>
+    <div class="bg-white rounded-xl shadow p-4"><p class="text-xs text-ink-400 font-bold">DRAFTS</p><p id="statDrafts" class="text-2xl font-bold font-display">0</p></div>
+  </div>
+
+  <section class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-semibold font-display mb-4">Create with Mavvi</h2>
+    <div class="grid md:grid-cols-4 gap-3">
+      <div class="md:col-span-2">
+        <label class="text-sm font-bold" for="topic">Topic</label>
+        <input id="topic" class="mt-1 w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-mavvi-500" value="Promote birthday cakes on Instagram" />
+      </div>
+      <div>
+        <label class="text-sm font-bold" for="platform">Platform</label>
+        <select id="platform" class="mt-1 w-full border rounded-lg p-3 bg-white"><option>Instagram</option><option>TikTok</option><option>Facebook</option></select>
+      </div>
+      <div>
+        <label class="text-sm font-bold" for="count">Count</label>
+        <select id="count" class="mt-1 w-full border rounded-lg p-3 bg-white"><option>3</option><option selected>5</option><option>7</option></select>
+      </div>
+    </div>
+    <button id="generateBtn" class="mt-4 bg-mavvi-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-mavvi-700">Generate ideas</button>
+    <div id="results" class="mt-4 space-y-3"></div>
+  </section>
+
+  <section class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-semibold font-display mb-4">Content Library <span class="text-xs text-ink-400 font-sans">(saved in this browser)</span></h2>
+    <div id="library" class="space-y-2 text-sm"><p class="text-ink-400">Nothing saved yet — generate above, then Save.</p></div>
+  </section>
+
+</div>
+<script>
+const hooks = ["Warm, elegant idea", "Playful celebration angle", "Behind-the-scenes magic", "Customer love story", "Limited-order nudge", "Decorating tip", "Party-planning helper"];
+let saved = JSON.parse(localStorage.getItem('mavvi-library') || '[]');
+function renderLibrary() {
+  const lib = document.getElementById('library');
+  document.getElementById('statSaved').textContent = saved.length;
+  document.getElementById('statDrafts').textContent = saved.length;
+  if (!saved.length) { lib.innerHTML = '<p class="text-ink-400">Nothing saved yet — generate above, then Save.</p>'; return; }
+  lib.innerHTML = saved.map((s,i) =>
+    `<div class="border rounded-lg p-3 flex justify-between gap-3"><span>${s}</span><button data-i="${i}" class="del text-ink-400 hover:text-red-600 font-bold">Delete</button></div>`
+  ).join('');
+  document.querySelectorAll('.del').forEach(b => b.onclick = () => { saved.splice(+b.dataset.i,1); localStorage.setItem('mavvi-library', JSON.stringify(saved)); renderLibrary(); });
+}
+document.getElementById('generateBtn').onclick = () => {
+  const topic = document.getElementById('topic').value.trim() || 'Birthday cakes';
+  const platform = document.getElementById('platform').value;
+  const n = +document.getElementById('count').value;
+  const box = document.getElementById('results');
+  box.innerHTML = '<p class="text-ink-400 text-sm">Generating with your brand voice…</p>';
+  setTimeout(() => {
+    const items = Array.from({length:n}, (_,i) => `${hooks[i % hooks.length]} for ${platform}: “${topic}” — elegant, warm and playful caption #${i+1} 🎂`);
+    document.getElementById('statGenerated').textContent = +document.getElementById('statGenerated').textContent + n;
+    box.innerHTML = items.map((t,i) =>
+      `<div class="border rounded-lg p-3 flex justify-between gap-3"><span>${t}</span><button data-t="${t.replace(/"/g,'&quot;')}" class="save bg-mavvi-100 text-mavvi-700 px-3 py-1 rounded font-bold shrink-0">Save</button></div>`
+    ).join('');
+    document.querySelectorAll('.save').forEach(b => b.onclick = () => { saved.push(b.dataset.t); localStorage.setItem('mavvi-library', JSON.stringify(saved)); renderLibrary(); b.textContent = 'Saved ✓'; b.disabled = true; });
+  }, 600);
+};
+renderLibrary();
+</script>
+</body>
+</html>

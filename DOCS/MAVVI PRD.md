@@ -635,3 +635,37 @@ Mavvi shouldn't just generate AI text. It should help the customer go from **"Wh
 
 That should be the heart of the product.
 
+# **27. Implementation Notes (Decided 2026-09-27)**
+
+## **Tools decided**
+
+* **Framework:** Next.js (TypeScript, App Router) + Tailwind CSS — one repo for customer UI, admin UI, and API routes. See `DOCS/TOOLS.md`.
+* **Database:** SQLite (local file via Prisma) — zero-install local dev, migrates to Postgres later.
+* **Authentication:** Auth.js (NextAuth v5) Credentials + bcrypt with `customer` / `admin` roles — no external provider locally.
+* **File storage:** Local filesystem (`public/uploads/` via `lib/storage.ts`) — swap to S3/Supabase Storage in V2.
+
+## **Why**
+
+* Keep MVP local-first: app runs on `http://localhost:3000`, DB is a local SQLite file. No cloud DB, auth service, or storage needed for development.
+* One framework (Next.js) covers UI + API to avoid a separate backend for MVP.
+* Prisma + SQLite removes Windows Postgres/Docker setup friction; Tailwind removes custom CSS overhead and gives responsive (`md:`, `lg:`) dashboard/calendar layouts quickly.
+* `lib/db.ts` and `lib/storage.ts` isolate DB/storage so prod (Postgres/S3) is a swap, not a rewrite.
+
+Full plan: `DOCS/IMPLEMENTATION_PLAN.md`. Tools detail: `DOCS/TOOLS.md`.
+
+# **28. Design Preview Note (Decided 2026-09-27)**
+
+## **Change requested**
+
+* Generate visual preview `design.html` showing colors, typography, styled button, and sample input.
+* Switch typography to a fun font.
+
+## **What was done**
+
+* Created `design.html` at repo root with: color palette (Primary #6D28D9, Light #F3E8FF, Ink #1E1B2E, Muted #8B87A3, BG #FDFAF6), typography samples, `Create with Mavvi` primary/secondary/disabled buttons, topic input + brand voice select.
+* Typography changed from Inter to fun pairing: **Fredoka (headings, `font-display`) + Nunito (body/UI, `font-sans`)** via Google Fonts + Tailwind config in `design.html`.
+
+## **Why**
+
+* Fun rounded fonts match Mavvi's warm/playful brand voice (e.g. Velour Confectioneries) and keep dashboard/generator friendly for non-technical users, while staying readable.
+

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mavvi — Design Preview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        mavvi: { 50:'#faf5ff', 100:'#f3e8ff', 500:'#7c3aed', 600:'#6d28d9', 700:'#5b21b6' },
+        ink: { 900:'#1e1b2e', 600:'#4b4763', 400:'#8b87a3' },
+        cream: '#fdfaf6'
+      },
+      fontFamily: { display: ['Fredoka','system-ui','sans-serif'], sans: ['Nunito','system-ui','sans-serif'] }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream text-ink-900 font-sans p-8">
+<div class="max-w-4xl mx-auto space-y-10">
+
+  <header>
+    <h1 class="text-3xl font-bold font-display">Mavvi — Design Preview</h1>
+    <p class="text-ink-600 mt-1">Colors · Typography · Button · Input (MVP baseline)</p>
+  </header>
+
+  <!-- Colors -->
+  <section class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-semibold font-display mb-4">1. Colors</h2>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div><div class="h-16 rounded-lg bg-mavvi-600"></div><p class="text-sm font-semibold mt-2">Primary</p><p class="text-xs text-ink-400">#6D28D9</p></div>
+      <div><div class="h-16 rounded-lg bg-mavvi-100 border"></div><p class="text-sm font-semibold mt-2">Primary Light</p><p class="text-xs text-ink-400">#F3E8FF</p></div>
+      <div><div class="h-16 rounded-lg bg-ink-900"></div><p class="text-sm font-semibold mt-2">Ink</p><p class="text-xs text-ink-400">#1E1B2E</p></div>
+      <div><div class="h-16 rounded-lg bg-ink-400"></div><p class="text-sm font-semibold mt-2">Muted</p><p class="text-xs text-ink-400">#8B87A3</p></div>
+      <div><div class="h-16 rounded-lg bg-cream border"></div><p class="text-sm font-semibold mt-2">Background</p><p class="text-xs text-ink-400">#FDFAF6</p></div>
+    </div>
+  </section>
+
+  <!-- Typography -->
+  <section class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-bold font-display mb-4">2. Typography (Fredoka + Nunito)</h2>
+    <h1 class="text-3xl font-semibold font-display">Heading 1 — Welcome back, Sarah</h1>
+    <h2 class="text-xl font-semibold font-display mt-2">Heading 2 — Your brand: Velour Confectioneries</h2>
+    <p class="text-base mt-2">Body — Mavvi turns “What should I post?” into a planned week of content.</p>
+    <p class="text-sm text-ink-600 mt-1">Small / muted — 7 ideas generated · 2 drafts · 3 scheduled</p>
+  </section>
+
+  <!-- Button -->
+  <section class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-semibold font-display mb-4">3. Styled Button</h2>
+    <div class="flex flex-wrap gap-3">
+      <button class="bg-mavvi-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-mavvi-700 focus:ring-2 focus:ring-mavvi-500 focus:outline-none">Create with Mavvi</button>
+      <button class="bg-white text-mavvi-700 border border-mavvi-100 px-6 py-3 rounded-lg font-semibold hover:bg-mavvi-50">View Calendar</button>
+      <button class="bg-mavvi-100 text-mavvi-700 px-6 py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed" disabled>Generating…</button>
+    </div>
+    <p class="text-xs text-ink-400 mt-3">Primary / Secondary / Disabled. Class: <code>bg-mavvi-600 text-white px-6 py-3 rounded-lg hover:bg-mavvi-700</code></p>
+  </section>
+
+  <!-- Input -->
+  <section class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-semibold font-display mb-4">4. Sample Input</h2>
+    <label class="block text-sm font-semibold mb-1" for="topic">Content topic</label>
+    <input id="topic" type="text" value="Promote birthday cakes on Instagram"
+      class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-mavvi-500 focus:border-mavvi-600 placeholder:text-ink-400"
+      placeholder="e.g. Create 5 Instagram posts promoting my birthday cakes" />
+    <label class="block text-sm font-semibold mt-4 mb-1" for="tone">Brand voice</label>
+    <select id="tone" class="w-full border rounded-lg p-3 bg-white focus:ring-2 focus:ring-mavvi-500 outline-none">
+      <option>Elegant, warm and playful</option>
+      <option>Bold and fun</option>
+      <option>Minimal and premium</option>
+    </select>
+    <p class="text-xs text-ink-400 mt-3">Focus state uses <code>focus:ring-2 focus:ring-mavvi-500</code>.</p>
+  </section>
+
+</div>
+</body>
+</html>
