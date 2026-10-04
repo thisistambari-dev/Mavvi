@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,21 +16,33 @@ export default function LoginPage() {
     e.preventDefault();
     setBusy(true);
     setError("");
-    const res = await signIn("credentials", { email, password, redirect: false });
+    const res = await fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json().catch(() => ({}));
     setBusy(false);
-    if (res?.error) {
-      setError("Invalid email or password.");
+    if (!res.ok) {
+      setError(data.error ?? "Signup failed.");
       return;
     }
-    router.push("/dashboard");
-    router.refresh();
+    router.push("/login");
   }
 
   return (
     <main className="max-w-md mx-auto p-8">
-      <h1 className="text-2xl font-semibold font-display">Login</h1>
-      <p className="text-sm text-ink-600 mt-1">Phase 1 real auth — local SQLite + Auth.js.</p>
+      <h1 className="text-2xl font-semibold font-display">Create your account</h1>
+      <p className="text-sm text-ink-600 mt-1">Phase 1 — stored locally in SQLite.</p>
       <form className="mt-4 space-y-3" onSubmit={onSubmit}>
+        <input
+          className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-mavvi-500"
+          placeholder="Full name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          minLength={2}
+        />
         <input
           className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-mavvi-500"
           placeholder="Email"
@@ -53,11 +65,11 @@ export default function LoginPage() {
           className="w-full bg-mavvi-600 text-white rounded-lg p-3 font-bold hover:bg-mavvi-700 disabled:opacity-50"
           disabled={busy}
         >
-          {busy ? "Signing in…" : "Sign in"}
+          {busy ? "Creating…" : "Sign up"}
         </button>
       </form>
       <p className="text-sm mt-4">
-        No account? <Link href="/signup" className="text-mavvi-700 font-bold">Sign up</Link>
+        Have an account? <Link href="/login" className="text-mavvi-700 font-bold">Log in</Link>
       </p>
     </main>
   );
