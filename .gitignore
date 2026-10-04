@@ -1,4 +1,10 @@
 ~$*.md
 ~$*.docx
 *.tmp
+node_modules/
+.next/
+.env.local
+prisma/dev.db
+prisma/dev.db-journal
+public/uploads/*
 

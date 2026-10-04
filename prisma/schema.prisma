@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+  emailVerified DateTime?
+  role          String   @default("customer")
+  status        String   @default("active")
+  createdAt     DateTime @default(now())
+  brands        BrandProfile[]
+  generations   Generation[]
+  contentItems  ContentItem[]
+}
+
+model BrandProfile {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brandName        String
+  industry         String
+  description      String
+  productsServices String
+  audience         String
+  platforms        String
+  voice            String
+  goals            String
+  contentTypes     String
+  createdAt        DateTime @default(now())
+  generations      Generation[]
+  contentItems     ContentItem[]
+}
+
+model Generation {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brandId     String
+  brand       BrandProfile @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  platform    String
+  contentType String
+  topic       String
+  objective   String
+  tone        String
+  count       Int
+  cta         Boolean  @default(false)
+  outputJson  String
+  createdAt   DateTime @default(now())
+}
+
+model ContentItem {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brandId      String
+  brand        BrandProfile @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  generationId String?
+  platform     String
+  contentType  String
+  caption      String
+  status       String   @default("Idea")
+  notes        String?
+  createdAt    DateTime @default(now())
+  calendarItems CalendarItem[]
+}
+
+model CalendarItem {
+  id            String      @id @default(cuid())
+  userId        String
+  contentItemId String
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  date          DateTime
+  platform      String
+  status        String      @default("Idea")
+  notes         String?
+}
+
+model SupportRequest {
+  id        String   @id @default(cuid())
+  userId    String
+  category  String
+  message   String
+  status    String   @default("open")
+  createdAt DateTime @default(now())
+}
+
+model AiTemplate {
+  id         String   @id @default(cuid())
+  key        String   @unique
+  contentType String
+  promptText String
+  version    Int      @default(1)
+  active     Boolean  @default(true)
+}
+
+model AiUsageLog {
+  id        String   @id @default(cuid())
+  userId    String
+  tokensIn  Int      @default(0)
+  tokensOut Int      @default(0)
+  latencyMs Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Plan {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  price            Float    @default(0)
+  generationLimit  Int      @default(20)
+  brandLimit       Int      @default(1)
+}
